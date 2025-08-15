@@ -13,10 +13,55 @@ class Home extends StatefulWidget {
 class _HomeState extends State<Home> {
   // Store your todos in a state variable to update UI on changes
   final List<ToDo> todoList = ToDo.todoList();
+  List<ToDo> _foundToDo = [];
+  final _todoController = TextEditingController();
+
+  @override
+  void initState() {
+    _foundToDo = todoList;
+    super.initState();
+  }
+
+  void _runFilter(String enteredKeyword) {
+    List<ToDo> results = [];
+    if (enteredKeyword.isEmpty) {
+      results = todoList;
+    } else {
+      results = todoList
+          .where(
+            (item) => item.todoText!.toLowerCase().contains(
+              enteredKeyword.toLowerCase(),
+            ),
+          )
+          .toList();
+    }
+
+    setState(() {
+      _foundToDo = results;
+    });
+  }
 
   void _handleToDoChange(ToDo todo) {
     setState(() {
       todo.isDone = !todo.isDone;
+    });
+  }
+
+  void _deleteToDoItems(String id) {
+    setState(() {
+      todoList.removeWhere((item) => item.id == id);
+    });
+  }
+
+  void _addToDoItems(String todo) {
+    setState(() {
+      todoList.add(
+        ToDo(
+          id: DateTime.now().millisecondsSinceEpoch.toString(),
+          todoText: todo,
+        ),
+      );
+      _todoController.clear();
     });
   }
 
@@ -35,21 +80,21 @@ class _HomeState extends State<Home> {
                   child: ListView(
                     children: [
                       Container(
-                        margin: const EdgeInsets.only(top: 50, bottom: 20),
-                        child: const Text(
-                          "All TOODOOSSSS",
+                        margin: EdgeInsets.only(top: 50, bottom: 20),
+                        child: Text(
+                          "All TOODOOSSSS:",
                           style: TextStyle(
                             fontSize: 30,
                             fontWeight: FontWeight.w500,
                           ),
                         ),
                       ),
-                      // Pass the handler callback to each ToDoItem (if needed)
-                      for (ToDo todoo in todoList)
+                      // Pass the handler callbacks to each ToDoItem
+                      for (ToDo todoo in _foundToDo.reversed)
                         ToDoItem(
                           todo: todoo,
                           onToDoChanged: _handleToDoChange,
-                          OnDeleteItem: () {},
+                          onDeleteItem: _deleteToDoItems,
                         ),
                     ],
                   ),
@@ -84,8 +129,9 @@ class _HomeState extends State<Home> {
                       ],
                       borderRadius: BorderRadius.circular(10),
                     ),
-                    child: const TextField(
-                      decoration: InputDecoration(
+                    child: TextField(
+                      controller: _todoController,
+                      decoration: const InputDecoration(
                         hintText: 'Add a new todo item',
                         border: InputBorder.none,
                       ),
@@ -95,7 +141,9 @@ class _HomeState extends State<Home> {
                 Container(
                   margin: const EdgeInsets.only(bottom: 20, right: 20),
                   child: ElevatedButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      _addToDoItems(_todoController.text);
+                    },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: tdViolet,
                       minimumSize: const Size(60, 60),
@@ -119,7 +167,8 @@ class _HomeState extends State<Home> {
         color: Colors.white,
         borderRadius: BorderRadius.circular(20),
       ),
-      child: const TextField(
+      child: TextField(
+        onChanged: (value) => _runFilter(value),
         decoration: InputDecoration(
           contentPadding: EdgeInsets.all(0),
           prefixIcon: Icon(Icons.search, color: tdViolet, size: 20),

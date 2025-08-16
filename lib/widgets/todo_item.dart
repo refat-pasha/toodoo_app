@@ -9,11 +9,11 @@ class ToDoItem extends StatelessWidget {
   final onDeleteItem;
 
   const ToDoItem({
-    Key? key,
+    super.key,
     required this.todo,
     required this.onToDoChanged,
     required this.onDeleteItem,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

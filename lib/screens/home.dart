@@ -5,7 +5,7 @@ import '../constants/colors.dart';
 import '../widgets/todo_item.dart';
 
 class Home extends StatefulWidget {
-  Home({Key? key}) : super(key: key);
+  const Home({super.key});
 
   @override
   State<Home> createState() => _HomeState();
@@ -91,7 +91,6 @@ class _HomeState extends State<Home> {
                 Container(
                   margin: EdgeInsets.only(bottom: 20, right: 20),
                   child: ElevatedButton(
-                    child: Text('+', style: TextStyle(fontSize: 40)),
                     onPressed: () {
                       _addToDoItem(_todoController.text);
                     },
@@ -100,6 +99,7 @@ class _HomeState extends State<Home> {
                       minimumSize: Size(60, 60),
                       elevation: 10,
                     ),
+                    child: Text('+', style: TextStyle(fontSize: 40)),
                   ),
                 ),
               ],
@@ -182,7 +182,7 @@ class _HomeState extends State<Home> {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Icon(Icons.menu, color: tdIndigo, size: 30),
-          Container(
+          SizedBox(
             height: 40,
             width: 40,
             child: ClipRRect(

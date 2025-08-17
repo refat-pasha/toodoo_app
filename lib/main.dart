@@ -23,4 +23,3 @@ class MyApp extends StatelessWidget {
     );
   }
 }
-// more thing will added later like theme, localization, etc.
